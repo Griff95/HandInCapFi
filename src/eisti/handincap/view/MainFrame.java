@@ -1,40 +1,44 @@
 package eisti.handincap.view;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.awt.image.ImageObserver;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-public class MainFrame extends JFrame {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class MainFrame extends JFrame implements ImageObserver {
+	MainPanel content = new MainPanel();
 
-	public MainFrame(String name) {
-		super(name);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+	public MainFrame(){
+		this.setTitle("Bouton");
+		this.setSize(1024, 576);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
-		//URL de l'image
-		String imgUrl="test.jpg";
-		ImageIcon icon = new ImageIcon(imgUrl);
-		Image image = icon.getImage(); // transform it 
-		Image newimg = image.getScaledInstance(800, 800,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-		icon = new ImageIcon(newimg);  // transform it back
-		//Création de JLable avec un alignement gauche
-		JLabel jlabel = new JLabel(icon, JLabel.CENTER);
-
-		//ajouter les deux JLabel a JFrame
-		this.getContentPane().add(jlabel);
-		this.validate();
-		this.setSize(icon.getIconWidth(), icon.getIconHeight());
+		
+		
+		this.setLayout(new BorderLayout());
+		
+		//Centre de l'application
+		this.getContentPane().add(content, BorderLayout.CENTER);
+		
+		//Partie gauche (Settings) de l'application
+		MenuPanel menuPan = new MenuPanel();
+		
+		this.getContentPane().add(menuPan, BorderLayout.WEST);
+		
+		
 		this.setVisible(true);
 	}
 
 	public static void main (String[] args) {
-		MainFrame main = new MainFrame("HandincapFi");
+		MainFrame main = new MainFrame();
 	}
 }
