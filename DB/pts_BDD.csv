@@ -1,0 +1,37 @@
+1,accueil,accueil du batiment,2,7,5,0,1
+2,toilettes_H,toilettes des hommes - rez de chaussée,2,13,5,0,2
+3,foyer,foyer étudiant,2,21,6,0,3
+4,amphi,amphi,2,7,13,0,4
+5,ascenseur,ascenseur,2,1,6,0,5
+6,porte1 hall amphi,,2,4,7,0,-1
+7,porte2 hall amphi,,2,10,7,0,-1
+8,porte1 hall dehors,,2,3,1,0,-1
+9,porte2 hall dehors,,2,17,16,0,-1
+10,escalier hall,escalier hall,2,4,3,0,6
+11,porte hall foyer,,2,19,2,0,-1
+12,porte foyer dehors,,2,24,1,0,-1
+13,porte_toilettes_H,,2,17,11,0,-1
+14,porte_toilettes_F,,2,16,5,0,-1
+15,escalier foyer,escalier foyer Condorcet,2,19,15,0,7
+16,porte_infirmerie,,2,17,12,0,-1
+17,porte_local_technique,,2,16,5,0,-1
+18,porte_foyer_couloir,,2,15,6,0,-1
+19,toilettes_F,toilettes des femmes - rez de chaussée,2,14,2,0,8
+20,hall,Hall d'accueil,2,7,12,0,9
+21,point angle couloir,Point qui donne accès au couloir vers escalier (face à l'infirmerie),2,18,6,0,-1
+22,point intersection,Point de choix vers escalier et autres,2,18,13,0,-1
+23,escalier_1,Escalier étage 1 côté hall,2,3,4,1,10
+24,passage cauchy,,2,6,0,1,-1
+25,point stratégique,Le point central pour accéder au reste du batiment (face au couloir/passerelle),2,5,6,1,-1
+26,bureau jerome morges,,2,6,6,1,11
+27,bureau nesim fintz,,2,11,6,1,12
+28,secrétaire nesim,,2,12,6,1,13
+28,CT201,,2,6,4,1,-1
+29,CT202,,2,16,5,1,-1
+30,CT203,,2,17,5,1,-1
+31,porte administration,Paperasse,2,18,6,1,14
+32,porte gestion etudes,Accompagnement des étudiants,2,18,9,1,15
+33,porte bureau international,,2,17,12,1,16
+34,point angle couloir,,2,18,6,1,-1
+35,escalier_2,Escalier étage 1 côté foyer,2,18,14,1,17
+36,ascenseur,Ascenseur étage 1,2,2,6,1,18
