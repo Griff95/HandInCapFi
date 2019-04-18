@@ -1,10 +1,13 @@
 package eisti.handincap.view;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,10 +22,10 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 public class MainPanel extends JPanel {
-
-	JPanel panel = new JPanel();
-	JLabel imgLabel;
-	private Image myMap;
+	
+	
+	private MapPanel mapPanel = new MapPanel();
+	private JPanel container = new JPanel();
 
 	public MainPanel() {
 
@@ -31,24 +34,17 @@ public class MainPanel extends JPanel {
 		this.setBackground(Color.magenta);
 		Border b = BorderFactory.createEmptyBorder(5, 15, 5, 15);
 		this.setBorder(b);
+
 		
-		ImageIcon myMap = new ImageIcon("test.jpg");
-		int imgH = myMap.getIconHeight()/3;
-		int imgW = myMap.getIconWidth()/3;
-		Image scaledImg = myMap.getImage()
-				.getScaledInstance(imgW, imgH,  java.awt.Image.SCALE_SMOOTH);
-		myMap = new ImageIcon(scaledImg);
-		imgLabel = new JLabel(myMap);
-		imgLabel.setPreferredSize(new Dimension(imgW, imgH));
-		panel.setBackground(Color.blue);
-		panel.setPreferredSize(new Dimension(400,400));
-		panel.add(imgLabel);
 
-		JPanel container = new JPanel();
-		container.add(new JButton("Définir la destination"));
+		container = new JPanel();
+		container.setAlignmentX(CENTER_ALIGNMENT);
+		container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
+		JLabel posLabel = new JLabel("Position de l'utilisateur :		X = , Y = ");
 		container.setBackground(Color.yellow);
-
-		this.add(panel);
+		container.add(posLabel);
+		container.add(new JButton("Definir la destination"));
+		this.add(mapPanel);
 		this.add(container);
 	}
 
