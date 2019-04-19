@@ -8,6 +8,15 @@ public class Building {
 	private ArrayList<BuildingMap> maps;
 	private int nbFloors;
 	
+	public Building() {
+		this.id = -1 ;
+		this.name = "";
+		this.maps = new ArrayList<BuildingMap>();
+		BuildingMap bm = new BuildingMap();
+		maps.add(bm);
+		int nbFloors = 0;
+	}
+	
 	public Building(int id, String n, ArrayList<BuildingMap> maps, int nbFloors) {
 		this.id = id;
 		this.name = n;

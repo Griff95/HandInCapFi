@@ -4,20 +4,43 @@ public class KeyPoint {
 	
 	private int id;
 	private String name;
-	private float lat;
-	private float lon;
+	private int x;
+	private int y;
 
-	public KeyPoint(int id, float lat, float lon) {
-		super();
+	public KeyPoint(int id, int x, int y) {
+		this.name = "toto";
 		this.id = id;
-		this.lat = lat;
-		this.lon = lon;
+		this.x = x;
+		this.y = y;
+	}
+
+	public KeyPoint(int x, int y) {
+		this.name = "";
+		this.id = -1;
+		this.x = x;
+		this.y =y;
 	}
 
 	public int getId() {
 		return id;
 	}
 	
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -28,22 +51,6 @@ public class KeyPoint {
 	
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	public float getLat() {
-		return lat;
-	}
-	
-	public void setLat(float lat) {
-		this.lat = lat;
-	}
-	
-	public float getLon() {
-		return lon;
-	}
-	
-	public void setLon(float lon) {
-		this.lon = lon;
 	}
 	
 }
