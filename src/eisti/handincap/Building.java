@@ -1,66 +1,61 @@
 package eisti.handincap;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Building {
-	private int id;
-	private String name;
-	private ArrayList<BuildingMap> maps;
-	private int nbFloors;
+	private String nom;
+	private ArrayList<String> etages;
+	private ArrayList<KeyPoint> points;
 	
-	public Building() {
-		this.id = -1 ;
-		this.name = "";
-		this.maps = new ArrayList<BuildingMap>();
-		BuildingMap bm = new BuildingMap();
-		maps.add(bm);
-		int nbFloors = 0;
-	}
+	// Make it Observable
+	private final PropertyChangeSupport pcs;
 	
-	public Building(int id, String n, ArrayList<BuildingMap> maps, int nbFloors) {
-		this.id = id;
-		this.name = n;
-		this.maps = maps;
-		this.setNbFloors(nbFloors);
-	}
-	
-	public int getId() {
-		return id;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public ArrayList<BuildingMap> getMaps() {
-	 return maps;
-	}
-	
-	public void setMaps(ArrayList maps) {
-		this.maps = maps;
-	}
-	
-	public void addBuildingMap(BuildingMap m) {
-		this.maps.add(m);
-	}
-	
-	public void removeBuildingMap(BuildingMap m) {
-		this.maps.remove(m);
+	public Building (String n) {
+		this.nom = n;
+		this.etages = new ArrayList<String>();
+		this.points = new ArrayList<KeyPoint>();
+		this.pcs = new PropertyChangeSupport(this);
 	}
 
-	public int getNbFloors() {
-		return nbFloors;
+	public String getNom() {
+		return nom;
+	}
+	
+	public void addEtageLast(String imgPath) {
+		etages.add(imgPath);
+	}
+	
+	public void addEtageFirst(String imgPath) {
+		etages.add(0, imgPath);
 	}
 
-	public void setNbFloors(int nbFloors) {
-		this.nbFloors = nbFloors;
+	public ArrayList<KeyPoint> getPoints() {
+		return points;
 	}
+	
+	public void addPoint(KeyPoint p) {
+		this.points.add(p);
+		pcs.firePropertyChange("addPoints", null, null);
+	}
+	
+	public void addPoint(int x, int y, int z) {
+		this.points.add(new KeyPoint(x,y, z));
+		pcs.firePropertyChange("addPoints", null, null);
+	}
+	
+	public void removePoint(KeyPoint p) {
+		this.points.remove(p);
+		pcs.firePropertyChange("removePoints", null, null);
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        pcs.addPropertyChangeListener(pcl);
+    }
+ 
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        pcs.removePropertyChangeListener(pcl);
+    }
 }

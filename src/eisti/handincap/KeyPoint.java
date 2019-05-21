@@ -1,56 +1,78 @@
 package eisti.handincap;
 
+import java.util.ArrayList;
+
 public class KeyPoint {
 	
-	private int id;
-	private String name;
-	private int x;
-	private int y;
+	public static int acc = 0;
+	
+	public int num;// Définit le nom du noeud
+	private int x, y ,z; // Coordonnées du point
+	private int distanceSource = Integer.MAX_VALUE; // Initialise la valeur de la distance entre le noeud et la source � l'infini
+	private boolean visite; // Indique si le noeud a �t� visit� ou non
+	private ArrayList<Link> liaisons; // Liste des liaisons
 
-	public KeyPoint(int id, int x, int y) {
-		this.name = "toto";
-		this.id = id;
+	
+	
+	public KeyPoint(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
+		this.z = z;
+		this.num = acc;
+		acc++;
+		this.visite = false;
+		liaisons = new ArrayList<Link>();
 	}
 
-	public KeyPoint(int x, int y) {
-		this.name = "";
-		this.id = -1;
-		this.x = x;
-		this.y =y;
-	}
-
-	public int getId() {
-		return id;
+	// Getters
+	public int getDistanceSource() {
+		return distanceSource;
 	}
 	
 	public int getX() {
 		return x;
 	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
+	
 	public int getY() {
 		return y;
 	}
+	
+	public boolean getVisite() {
+		return visite;
+	}
+	
+	public ArrayList<Link> getLiaisons() {
+		// Envoie toutes les liaisons du noeud
+		return liaisons;
+	}
 
+
+	// Setters
+	public void setDistanceSource(int distanceSource) {
+		this.distanceSource = distanceSource;
+	}
+	
+	public void setX(int x) {
+		this.x = x;
+	}
+	
 	public void setY(int y) {
 		this.y = y;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setVisite(boolean visite) {
+		this.visite = visite;
+	}
+
+	public void setLiaisons(ArrayList<Link> liaisons) {
+		this.liaisons = liaisons;
 	}
 	
-	public String getName() {
-		return name;
+	public void addLiaison(Link liaison) {
+		this.liaisons.add(liaison);
 	}
 	
-	public void setName(String name) {
-		this.name = name;
+	public void removeLiaison(Link liaison) {
+		this.liaisons.remove(liaison);
 	}
-	
 }
