@@ -1,10 +1,14 @@
 package eisti.handincap;
 
-public class Link {
+import java.io.Serializable;
+
+public class Link implements Serializable{
 
 	// Le noeud dont la liaison provient et où elle mène avec les coordonnées associées
 	private int deNemeNoeud;
 	private int versNemeNoeud;
+	private KeyPoint k1;
+	private KeyPoint k2;
 
 	// Sa taille
 	private int taille;
@@ -12,9 +16,19 @@ public class Link {
 
 	// Initialisation des valeurs à l'appel de fonction
 	public Link(KeyPoint deNemeNoeud, KeyPoint versNemeNoeud, int taille) {
+		this.k1 = deNemeNoeud;
+		this.k2 = versNemeNoeud;
 		this.deNemeNoeud = deNemeNoeud.num;
 		this.versNemeNoeud = versNemeNoeud.num;
 		this.taille = taille;
+	}
+
+	public KeyPoint getK1() {
+		return k1;
+	}
+
+	public KeyPoint getK2() {
+		return k2;
 	}
 
 	public int getDeNemeNoeud() {

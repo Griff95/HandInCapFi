@@ -3,6 +3,10 @@ package eisti.handincap.view;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -10,10 +14,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import eisti.handincap.Building;
+import eisti.handincap.PathFinder;
 import eisti.handincap.Site;
 
 public class MainFrame extends JFrame {
-	
+
 	private Site abstraction;
 
 	private MainPanel content;
@@ -25,10 +30,11 @@ public class MainFrame extends JFrame {
 		content = new MainPanel(abstraction);
 		menuPan = new MenuPanel(abstraction);
 		this.setTitle("HandinCapFi Application");
-		this.setSize(1024, 576);
+		this.setSize(1600, 850);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
-		
+
+		// init menu bar
 		menuBar = new JMenuBar();
 		JMenu menuFichier = new JMenu("Fichier");
 		JMenuItem newMenuItem = new JMenuItem("Nouveau..");
@@ -36,32 +42,74 @@ public class MainFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Le menuItem Nouveau.. est cliqué");
-				
+				MainFrame.this.dispose();
+				NewProjectFrame newProjectFrame = new NewProjectFrame();
 			}
-			
+
 		});
 		JMenuItem openMenuItem = new JMenuItem("Ouvrir..");
+		openMenuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				MainFrame.this.dispose();
+				LoadProjectFrame loadFrame = new LoadProjectFrame();
+			}
+
+		});
 		JMenuItem saveMenuItem = new JMenuItem("Sauvegarder..");
+		saveMenuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					FileOutputStream fos = new FileOutputStream("save.ser");
+
+					ObjectOutputStream oos = new ObjectOutputStream(fos); 
+					oos.writeObject(abstraction);
+
+
+					oos.close();
+
+
+				} catch (FileNotFoundException e) {
+
+					e.printStackTrace();
+				} catch (IOException e) {
+
+					e.printStackTrace();
+				} 
+
+			}
+
+		});
 		JMenuItem quitMenuItem = new JMenuItem("Quitter");
+		quitMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		menuFichier.add(newMenuItem);
 		menuFichier.add(openMenuItem);
 		menuFichier.add(saveMenuItem);
 		menuFichier.add(quitMenuItem);
 		menuBar.add(menuFichier);
 		this.setJMenuBar(menuBar);
-		
+
 		this.setLayout(new BorderLayout());
 		this.getContentPane().add(content, BorderLayout.CENTER);	
 		this.getContentPane().add(menuPan, BorderLayout.WEST);
-		
-		
-		
+
+
+
 		this.setVisible(true);
+		this.pack();
 	}
 
 	public static void main (String[] args) {
-		Site project = new Site("EISTI");
-		MainFrame main = new MainFrame(project);
+		Site abstraction = new Site("EISTI");
+		abstraction.addBuilding(new Building("Condorcet", "test.jpg"));
+		MainFrame main = new MainFrame(abstraction);
 	}
 }

@@ -1,15 +1,18 @@
 package eisti.handincap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class KeyPoint {
+public class KeyPoint implements Serializable{
 	
 	public static int acc = 0;
 	
-	public int num;// Définit le nom du noeud
+	public int num;// Définit l'id du noeud
 	private int x, y ,z; // Coordonnées du point
-	private int distanceSource = Integer.MAX_VALUE; // Initialise la valeur de la distance entre le noeud et la source � l'infini
-	private boolean visite; // Indique si le noeud a �t� visit� ou non
+	
+	
+	private int distanceSource = Integer.MAX_VALUE; // Initialise la valeur de la distance entre le noeud et la source à l'infini
+	private boolean visite; // Indique si le noeud a été visité ou non
 	private ArrayList<Link> liaisons; // Liste des liaisons
 
 	
@@ -22,6 +25,7 @@ public class KeyPoint {
 		acc++;
 		this.visite = false;
 		liaisons = new ArrayList<Link>();
+		System.out.println("KeyPoint n°" + num);
 	}
 
 	// Getters
@@ -75,4 +79,18 @@ public class KeyPoint {
 	public void removeLiaison(Link liaison) {
 		this.liaisons.remove(liaison);
 	}
+
+	public int getZ() {
+		return z;
+	}
+
+	public void setZ(int z) {
+		this.z = z;
+	}
+	
+	public int getDistanceTo(KeyPoint k) {
+		return (int) Math.sqrt(Math.pow((this.getX()-k.getX()), 2)+Math.pow((this.getY()-k.getY()),2));
+	}
+
+
 }

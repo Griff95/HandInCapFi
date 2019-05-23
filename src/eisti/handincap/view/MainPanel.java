@@ -1,10 +1,17 @@
 package eisti.handincap.view;
 
-import java.awt.Color;
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -12,67 +19,148 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 import eisti.handincap.Building;
+import eisti.handincap.KeyPoint;
+import eisti.handincap.KeyPointDestination;
+import eisti.handincap.KeyPointUser;
+import eisti.handincap.PathFinder;
 import eisti.handincap.Site;
+import eisti.handincap.control.AddEtageAction;
 
-public class MainPanel extends JPanel {
-	
+public class MainPanel extends JPanel implements PropertyChangeListener {
+
 	private Site abstraction;
 	private MapLabel mapLabel;
 	private JButton etageDessus;
 	private JButton etageDessous;
-	private JButton nouveauBatiment;
-	
-	private int etageCourant;
+	private JButton newEtageDessus;
+	private JButton newEtageDessous;
+	private JComboBox<KeyPointDestination> comboDest;
+	private JLabel title;
+
+
+
 
 	public MainPanel(Site abstraction) {
 		this.abstraction = abstraction;
+		PathFinder pf = new PathFinder(new KeyPointUser(0, 0, 0));
 
 		Border b = BorderFactory.createEmptyBorder(5, 15, 5, 15);
 		this.setBorder(b);
-		
-		etageDessus = new JButton("Ajouter un Etage au dessus");
-		etageDessous = new JButton("Ajouter un Etage au dessous");
-		if (abstraction.getBuildings().isEmpty()) {
-			mapLabel = new MapLabel();
-			System.out.println("on est la hein");
-			etageDessus.setEnabled(false);
-			etageDessous.setEnabled(false);
-		} else {
-			mapLabel = new MapLabel(abstraction.getBuildingIndexed(0));
-		}
+
+		mapLabel = new MapLabel(abstraction, pf);
 		mapLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		title = new JLabel(	abstraction.getName() + " - " +
+				abstraction.getBuildingIndexed(mapLabel.getBatimentCourant()).getNom() + " - Etage " +
+				mapLabel.getEtageCourant());
+		title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+		etageDessous = new JButton("Voir étage du dessous");
+		etageDessous.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				mapLabel.setEtageCourant(mapLabel.getEtageCourant()-1);
+			}
+		});
+
+		etageDessus = new JButton("Voir étage du dessus");
+		etageDessus.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				mapLabel.setEtageCourant(mapLabel.getEtageCourant()+1);
+			}
+		});
+
+		newEtageDessus = new JButton("Ajouter un etage au dessus");
+		newEtageDessus.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				AddEtageDialog d = new AddEtageDialog(abstraction, mapLabel, AddEtageAction.Type.DESSUS);
+				d.setVisible(true);
+				repaint();
+			}
+		});
+		newEtageDessous = new JButton("Ajouter un etage au dessous");
+		newEtageDessous.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				AddEtageDialog d = new AddEtageDialog(abstraction, mapLabel, AddEtageAction.Type.DESSOUS);
+				d.setVisible(true);
+				repaint();
+			}
+		});
+
 		JPanel controlMapPanel = new JPanel();
-		nouveauBatiment = new JButton("Ajouter un Batiment");
-		//etageDessus.addActionListener(new AddEtageAction(abstraction, DESSUS));
-		//etageDessous.addActionListener(new AddEtageAction(abstraction, DESSOUS));
-		//nouveauBatiment.addActionListener(new AddBatimentAction(abstraction));
 		controlMapPanel.add(etageDessus);
 		controlMapPanel.add(etageDessous);
-		controlMapPanel.add(nouveauBatiment);
+		controlMapPanel.add(newEtageDessus);
+		controlMapPanel.add(newEtageDessous);
 		
+		comboDest = new JComboBox<KeyPointDestination>();
+		//comboDest.setPreferredSize(new Dimension(10,20));
+		//comboDest.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXX");
+
+		comboDest.setModel(new DefaultComboBoxModel(abstraction.getBuildingIndexed(mapLabel.getBatimentCourant()).getPointsDestination().toArray()));
+		abstraction.getBuildingIndexed(mapLabel.getBatimentCourant()).addPropertyChangeListener(this);
+
+		JButton goDest = new JButton("Go");
+		goDest.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				KeyPoint destination = (KeyPoint) comboDest.getSelectedItem();
+				//TODO pf.
+			}
+			
+		});
+
+		// Définir la destination
 		JPanel destinationPanel = new JPanel();
-		destinationPanel.add(new JLabel("Définir destination : "));
-		JComboBox<String> combo;
-		destinationPanel.add(combo = new JComboBox<String>());
-		combo.addItem("Condorcet");
-		destinationPanel.add(combo = new JComboBox<String>());
-		combo.addItem("Numero Etage");
-		destinationPanel.add(combo = new JComboBox<String>());
-		combo.addItem("Nom Salle");
-		destinationPanel.add(new JButton("Go"));
+		destinationPanel.add(new JLabel("Définir destination (Batiment/Etage/Destination) : "));
+		destinationPanel.add(comboDest);
+		destinationPanel.add(goDest);
 		
 		
 		this.setAlignmentX(CENTER_ALIGNMENT);
-		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		//this.setLayout(new BorderLayout());
+		//JPanel centerPanel = new JPanel();
+		//centerPanel.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.add(title);
 		this.add(mapLabel);
+		//this.add(centerPanel, BorderLayout.CENTER);
+
+		//JPanel southPanel = new JPanel();
+		//southPanel.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.add(controlMapPanel);
 		this.add(destinationPanel);
-	
-		
+		//this.add(southPanel, BorderLayout.SOUTH);
 	}
+
 
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
+		int batiment = mapLabel.getBatimentCourant();
+		int etage = mapLabel.getEtageCourant();
+		title.setText(	abstraction.getName() + " - " +
+				abstraction.getBuildingIndexed(mapLabel.getBatimentCourant()).getNom() + " - Etage " +
+				mapLabel.getEtageCourant());
+
+
+		etageDessous.setEnabled(true);
+		etageDessus.setEnabled(true);
+		if(etage == abstraction.getBuildingIndexed(mapLabel.getBatimentCourant()).getEtages().size()-1) {
+			etageDessus.setEnabled(false);
+		}
+		if (etage == 0) {
+			etageDessous.setEnabled(false);
+		}
+	}
+
+	// C'est moche mais ça marche 3:)
+	@Override
+	public void propertyChange(PropertyChangeEvent arg0) {
+		comboDest.setModel(new DefaultComboBoxModel(abstraction.getBuildingIndexed(mapLabel.getBatimentCourant()).getPointsDestination().toArray()));
 	}
 }
 

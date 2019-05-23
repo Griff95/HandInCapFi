@@ -5,7 +5,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 
 public class HandincapStaticMethods {
-	private static final int MAPSCALE = 3; // On réduit la taille des images des plans par 3
+	private static final int MAPSCALE = 2; // On rï¿½duit la taille des images des plans par 3
 
 
 	public static ImageIcon getScaledImageIcon(String imgPath) {

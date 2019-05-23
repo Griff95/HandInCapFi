@@ -1,60 +1,124 @@
 package eisti.handincap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class PathFinder {
+public class PathFinder implements Serializable {
 
 
-	private KeyPoint[] noeuds;
-	private int nbDeNoeuds;
-	private Link[] liaisons;
-	private int nbDeLiaisons;
+	//private ArrayList<KeyPoint> noeuds;
+	//private ArrayList<Link> liaisons;
+	private KeyPointUser userPos;
+	private ArrayList<Link> chemin;
 
 
-	public PathFinder(Link[] liaisons, KeyPoint[] noeuds) {
+	/*
+	// Utile lorsqu'aucune destination n'a été entrée
+	public PathFinder(Building bat, KeyPointUser userPosition) {
+		this.liaisons = bat.getLiaisons();
+		this.noeuds = bat.getPoints();
+		this.userPos = userPosition;
+
+		int size = (liaisons == null)? 0 : liaisons.size();
+
+		// Lie les liaisons aux noeuds associes
+		for (int liaisonEffectuee = 0 ; liaisonEffectuee < size ; liaisonEffectuee++) {
+			this.noeuds.get(liaisons.get(liaisonEffectuee).getDeNemeNoeud()).getLiaisons().add(liaisons.get(liaisonEffectuee));
+			this.noeuds.get(liaisons.get(liaisonEffectuee).getVersNemeNoeud()).getLiaisons().add(liaisons.get(liaisonEffectuee));
+		}
+	}
+	*/
+	
+	public PathFinder(KeyPointUser userPosition) {
+		this.userPos = userPosition;
+		this.chemin = new ArrayList<Link>();
+
+		
+		
+		//Initialisation de l'algorithme de Dijkstra en se basant sur le noeud le plus proche de l'utilisateur comme noeud de depart
+		/*int noeudDepart = pointProche(userPos).num;
+		this.calculPlusCourtChemin(noeudDepart);
+		this.cheminParcouru(noeudDepart, noeudArrivee);*/
+	}
+	
+
+	// Donne le noeud le plus proche du noeud selectionne
+	public KeyPoint pointProche(ArrayList<KeyPoint> noeuds, KeyPointUser user) {
+		double distMin = Double.MAX_VALUE;
+		double dist;
+		KeyPoint pointPlusProche = null;
+		for (KeyPoint pt : noeuds) {
+			dist = calculDistance(user,pt);
+			if (dist < distMin) {
+				distMin = dist;
+				pointPlusProche = pt;
+			}
+		}
+		return pointPlusProche;
+	}
+	
+	// Donne la distance entre deux noeuds
+	public double calculDistance(KeyPoint user, KeyPoint pt) {
+		double distance = 0;
+		if (user.getZ() != pt.getZ()) {
+			distance = Math.abs(user.getZ() - pt.getZ())*10;
+		}
+		distance += Math.sqrt(Math.pow((user.getX()-pt.getX()), 2)+Math.pow((user.getY()-pt.getY()),2));
+		return distance;
+	}
+	
+	
+	public void initialisation(ArrayList<KeyPoint> noeuds, ArrayList<Link> liaisons) {
+		// Vide les liaisons des noeuds
+		for (KeyPoint noeud : noeuds) {
+			noeud.setLiaisons(new ArrayList<Link>());
+			noeud.setVisite(false);
+		}
+		
+		// Lie les liaisons aux noeuds
+		for (int liaisonEffectuee = 0 ; liaisonEffectuee < liaisons.size() ; liaisonEffectuee++) {
+			noeuds.get(liaisons.get(liaisonEffectuee).getDeNemeNoeud()).getLiaisons().add(liaisons.get(liaisonEffectuee));
+			noeuds.get(liaisons.get(liaisonEffectuee).getVersNemeNoeud()).getLiaisons().add(liaisons.get(liaisonEffectuee));
+		}
+		
+		//Initialisation de l'algorithme de Dijkstra en se basant sur le noeud le plus proche de l'utilisateur comme noeud de depart
+		int noeudDepart = pointProche(noeuds, userPos).num;
+		this.calculPlusCourtChemin(noeuds, liaisons, noeudDepart);
+	}
+	
+	
+	public void calculChemin(ArrayList<KeyPoint> noeuds, ArrayList<Link> liaisons, KeyPoint noeudArrivee) {
+		int noeudDepart = pointProche(noeuds, userPos).num;
+		this.cheminParcouru(noeuds, liaisons, noeudDepart, noeudArrivee.num);
+	}
+
+	
+	/*
+	// Initialise la liste de noeuds ÃÂ  partir de la liste des liaisons
+	public PathFinder(Link[] liaisons) {
 		this.liaisons = liaisons;
-		this.nbDeLiaisons = liaisons.length;
 
-		this.noeuds = noeuds;
-		this.nbDeNoeuds = noeuds.length;
+		// CrÃÂ©ÃÂ© le nb de noeuds en fonction des liaisons
+		this.nbDeNoeuds = calculNbNoeuds(liaisons);
+		this.noeuds = new KeyPoint[this.nbDeNoeuds];
 
-		// Vérifie s'il n'y a pas de noeud abandonné
-		if (nbDeNoeuds > nbDeLiaisons) {
-			System.out.println("Erreur : noeud seul dans le graphe.");
+		// ImplÃÂ©mentation des noeuds
+		for (int n = 0 ; n < this.nbDeNoeuds ; n++) {
+			this.noeuds[n] = new KeyPoint(n);
 		}
 
-		// Lie les liaisons aux noeuds associés
+		// Relie les liaisons ÃÂ  leurs noeuds
+		this.nbDeLiaisons = liaisons.length;
 		for (int liaisonEffectuee = 0 ; liaisonEffectuee < nbDeLiaisons ; liaisonEffectuee++) {
 			this.noeuds[liaisons[liaisonEffectuee].getDeNemeNoeud()].getLiaisons().add(liaisons[liaisonEffectuee]);
 			this.noeuds[liaisons[liaisonEffectuee].getVersNemeNoeud()].getLiaisons().add(liaisons[liaisonEffectuee]);
 		}
 	}
+	*/
 
-/*
-	// Initialise la liste de noeuds à partir de la liste des liaisons
-	public PathFinder(Link[] liaisons) {
-		this.liaisons = liaisons;
-
-		// Créé le nb de noeuds en fonction des liaisons
-		this.nbDeNoeuds = calculNbNoeuds(liaisons);
-		this.noeuds = new KeyPoint[this.nbDeNoeuds];
-
-		// Implémentation des noeuds
-		for (int n = 0 ; n < this.nbDeNoeuds ; n++) {
-			this.noeuds[n] = new KeyPoint(n);
-		}
-
-		// Relie les liaisons à leurs noeuds
-		this.nbDeLiaisons = liaisons.length;
-		for (int liaisonEffectuee = 0 ; liaisonEffectuee < nbDeLiaisons ; liaisonEffectuee++) {
-			this.noeuds[liaisons[liaisonEffectuee].getDeNemeNoeud()].getLiaisons().add(liaisons[liaisonEffectuee]);
-			this.noeuds[liaisons[liaisonEffectuee].getVersNemeNoeud()].getLiaisons().add(liaisons[liaisonEffectuee]);
-		}
-	}*/
-
-
-	// Obtient le numéro maximum parmi les noeuds et ajoute 1 pour tenir en compte le noeud 0
+	/*
+	// Obtient le numÃÂ©ro maximum parmi les noeuds et ajoute 1 pour tenir en compte le noeud 0
 	private int calculNbNoeuds(Link[] liaisons) {
 		int nbDeNoeuds = 0;
 
@@ -71,114 +135,126 @@ public class PathFinder {
 
 		return nbDeNoeuds;
 	}
+	*/
 
 
-	// Permet d'obtenir la liste des noeuds à parcourir pour aller du noeud de départ au noeud d'arrivée
-	public void cheminParcouru(int noeudDepart, int noeudArrivee) {
+	// Permet d'obtenir la liste des noeuds a  parcourir pour aller du noeud de depart au noeud d'arrivee
+	public void cheminParcouru(ArrayList<KeyPoint> noeuds, ArrayList<Link> liaisons, int noeudDepart, int noeudArrivee) {
 		ArrayList<KeyPoint> chemin = new ArrayList<KeyPoint>();
 		int noeudEtudie = noeudArrivee;
 		int noeudAEtudier = noeudEtudie;
-		int minDist = this.noeuds[noeudEtudie].getDistanceSource();
-		chemin.add(this.noeuds[noeudArrivee]);
-		// Part du noeud d'arrivée et remonte à la source en prenant le chemin le plus court
-		while (this.noeuds[noeudEtudie].getDistanceSource() != 0) {
-			ArrayList<Link> liaisonsDuNoeud = this.noeuds[noeudEtudie].getLiaisons();
+		int minDist = noeuds.get(noeudEtudie).getDistanceSource();
+		chemin.add(noeuds.get(noeudArrivee));
+		// Part du noeud d'arrivee et remonte a la source en prenant le chemin le plus court
+		while (noeuds.get(noeudEtudie).getDistanceSource() != 0) {
+			ArrayList<Link> liaisonsDuNoeud = noeuds.get(noeudEtudie).getLiaisons();
 			for (int liaisonEtudiee = 0 ; liaisonEtudiee < liaisonsDuNoeud.size() ; liaisonEtudiee++) {
 				int noeudVoisin = liaisonsDuNoeud.get(liaisonEtudiee).getVoisin(noeudEtudie);
-				if (this.noeuds[noeudVoisin].getDistanceSource() < minDist) {
-					minDist = this.noeuds[noeudVoisin].getDistanceSource();
+				if (noeuds.get(noeudVoisin).getDistanceSource() < minDist) {
+					minDist = noeuds.get(noeudVoisin).getDistanceSource();
 					noeudAEtudier = noeudVoisin;
 				}
 			}
 			noeudEtudie = noeudAEtudier;
-			chemin.add(this.noeuds[noeudEtudie]);
+			chemin.add(noeuds.get(noeudEtudie));
 		}
 		Collections.reverse(chemin);
-		// Affichage des résultats
-		testResultat(noeudDepart, noeudArrivee, chemin);
+		// Affichage des resultats
+		//testResultat(noeudDepart, noeudArrivee, chemin);
+		creerChemin(chemin);
 	}
+	
+	// Permet d'obtenir le chemin des liaisons a parcourir a partir du chemin des noeuds a parcourir
+	public void creerChemin(ArrayList<KeyPoint> cheminNoeuds) {
+		this.chemin = new ArrayList<Link>();
+		KeyPoint noeudEtudie;
+		for (int i = 0 ; i < cheminNoeuds.size()-1 ; i++) {
+			noeudEtudie = cheminNoeuds.get(i);
+			for (Link liaisonEtudiee : noeudEtudie.getLiaisons()) {
+				if (liaisonEtudiee.getVersNemeNoeud() == cheminNoeuds.get(i+1).num) {
+					this.chemin.add(liaisonEtudiee);
+				} else if (liaisonEtudiee.getDeNemeNoeud() == cheminNoeuds.get(i+1).num) {
+					this.chemin.add(liaisonEtudiee);
+				}
+			}
+		}
+	}
+	
 
-	// L'algorithme de Dijkstra qui va, à partir d'un noeud source, initialiser tous les noeuds associés
-	public void calculPlusCourtChemin(int noeudDepart) {
-		// Le noeud de départ est la source
-		this.noeuds[noeudDepart].setDistanceSource(0);
+	// L'algorithme de Dijkstra qui va, a  partir d'un noeud source, initialiser tous les noeuds associes
+	public void calculPlusCourtChemin(ArrayList<KeyPoint> noeuds, ArrayList<Link> liaisons, int noeudDepart) {
+		// Le noeud de depart est la source
+		noeuds.get(noeudDepart).setDistanceSource(0);
 		int noeudEtudie = noeudDepart;
 
 		// Parcours chaque noeud
-		for (int i = 0 ; i < this.noeuds.length ; i++) {
+		for (int i = 0 ; i < noeuds.size() ; i++) {
 			// Liste des liaisons du noeud parcouru
-			ArrayList<Link> liaisonsDuNoeud = this.noeuds[noeudEtudie].getLiaisons();
+			ArrayList<Link> liaisonsDuNoeud = noeuds.get(noeudEtudie).getLiaisons();
 
 			// Parcours les liaisons du noeud actuel
 			for (int liaisonEtudiee = 0 ; liaisonEtudiee < liaisonsDuNoeud.size() ; liaisonEtudiee++) {
-				// Obtention du numéro du noeud voisin
+				// Obtention du numero du noeud voisin
 				int noeudVoisin = liaisonsDuNoeud.get(liaisonEtudiee).getVoisin(noeudEtudie);
 
-				if (!this.noeuds[noeudVoisin].getVisite()) {
-					int tailleCheminPotentiel = this.noeuds[noeudEtudie].getDistanceSource() + liaisonsDuNoeud.get(liaisonEtudiee).getTaille();
-					if (tailleCheminPotentiel < noeuds[noeudVoisin].getDistanceSource()) {
-						noeuds[noeudVoisin].setDistanceSource(tailleCheminPotentiel);
+				if (!noeuds.get(noeudVoisin).getVisite()) {
+					int tailleCheminPotentiel = noeuds.get(noeudEtudie).getDistanceSource() + liaisonsDuNoeud.get(liaisonEtudiee).getTaille();
+					if (tailleCheminPotentiel < noeuds.get(noeudVoisin).getDistanceSource()) {
+						noeuds.get(noeudVoisin).setDistanceSource(tailleCheminPotentiel);
 					}
 				}
 			}
-			// Tout les voisins ayant été testés, le noeud est considéré comme visité
-			noeuds[noeudEtudie].setVisite(true);
-
-			noeudEtudie = getNoeudPlusCourtChemin();
+			// Tout les voisins ayant ete testes, le noeud est considere comme visite
+			noeuds.get(noeudEtudie).setVisite(true);
+			noeudEtudie = getNoeudPlusCourtChemin(noeuds, liaisons);
 		}
 	}
 
-	private int getNoeudPlusCourtChemin() {
+	private int getNoeudPlusCourtChemin(ArrayList<KeyPoint> noeuds, ArrayList<Link> liaisons) {
 		int numNoeudAnalyse = 0;
 		int distAccumulee = Integer.MAX_VALUE;
-
-		for (int i = 0 ; i < this.noeuds.length ; i++) {
-			int distActuelle = this.noeuds[i].getDistanceSource();
-
-			if (!this.noeuds[i].getVisite() && distActuelle < distAccumulee) {
+		for (int i = 0 ; i < noeuds.size() ; i++) {
+			int distActuelle = noeuds.get(i).getDistanceSource();
+			if (!noeuds.get(i).getVisite() && distActuelle < distAccumulee) {
 				distAccumulee = distActuelle;
 				numNoeudAnalyse = i;
 			}
 		}
-
 		return numNoeudAnalyse;
 	}
 
 
 	// Test de rendu :
-	public void testResultat(int noeudDepart, int noeudArrivee, ArrayList<KeyPoint> chemin) {
-		String sortie = "Nombre de noeuds : " + this.nbDeNoeuds;
-		sortie += "\nNombre de liaisons : " + this.nbDeLiaisons;
+	/*public void testResultat(int noeudDepart, int noeudArrivee, ArrayList<KeyPoint> chemin) {
+		String sortie = "Nombre de noeuds : " + noeuds.size();
+		sortie += "\nNombre de liaisons : " + this.liaisons.size();
 
-		for (int i = 0 ; i < this.noeuds.length ; i++) {
-			sortie += ("\nTest unitaire :\nLe chemin le plus court du noeud " + noeudDepart + " au noeud " + i + " est : " + noeuds[i].getDistanceSource());
-		}
+		//for (int i = 0 ; i < this.noeuds.size() ; i++) {
+		//	sortie += ("\nTest unitaire :\nLe chemin le plus court du noeud " + noeudDepart + " au noeud " + i + " est : " + noeuds.get(i).getDistanceSource());
+		//}
 
-		sortie += "\n\nLe chemin le plus court du noeud de départ au noeud d'arrivée est de : " + noeuds[noeudArrivee].getDistanceSource();
+		sortie += "\n\nLe chemin le plus court du noeud de depart au noeud d'arrivee est de : " + noeuds.get(noeudArrivee).getDistanceSource();
 
-		sortie += "\n\nVous devez vous diriger vers le noeud de coordonnées (X=" + chemin.get(1).getX() + " ; Y=" + chemin.get(1).getY() + ") qui se situe à " + + chemin.get(1).getDistanceSource() + " mètres.";
+		sortie += "\n\nVous devez vous diriger vers le noeud de coordonnees (X=" + chemin.get(1).getX() + " ; Y=" + chemin.get(1).getY() + ") qui se situe aÂ  " + + chemin.get(1).getDistanceSource() + " metres.";
 
 		System.out.println(sortie);
+	}*/
+	
+	public ArrayList<Link> getChemin() {
+		return chemin;
+	}
+	
+	public KeyPointUser getUserPos() {
+		return userPos;
 	}
 
-
-	public KeyPoint[] getNoeuds() {
-		return noeuds;
+	public void setUserPos(KeyPointUser userPos) {
+		this.userPos = userPos;
 	}
-
-
-	public int getNbDeNoeuds() {
-		return nbDeNoeuds;
+	
+	public void setUserPos(int x, int y, int z) {
+		this.userPos.setX(x);
+		this.userPos.setY(y);
+		this.userPos.setZ(z);
 	}
-
-
-	public Link[] getLiaisons() {
-		return liaisons;
-	}
-
-
-	public int getNbDeliaisons() {
-		return nbDeLiaisons;
-	}
-
 }
