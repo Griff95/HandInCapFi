@@ -41,11 +41,12 @@ public class SaveProjectDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser chooser = new JFileChooser();
-			    chooser.setCurrentDirectory(new File("/home/"));
+			    chooser.setCurrentDirectory(new File("/home/eisti"));
 			    int retrival = chooser.showSaveDialog(null);
 			    if (retrival == JFileChooser.APPROVE_OPTION) {
 			    	try {
-						FileOutputStream fos = new FileOutputStream(chooser.getSelectedFile()+".ser");
+			    		File f = new File(chooser.getSelectedFile().getAbsolutePath());
+						FileOutputStream fos = new FileOutputStream(f.getPath()+".ser");
 						ObjectOutputStream oos = new ObjectOutputStream(fos); 
 						oos.writeObject(abstraction);
 						oos.close();
