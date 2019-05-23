@@ -14,6 +14,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import eisti.handincap.Building;
+import eisti.handincap.KeyPointUser;
 import eisti.handincap.PathFinder;
 import eisti.handincap.Site;
 
@@ -27,8 +28,9 @@ public class MainFrame extends JFrame {
 
 	public MainFrame(Site s){
 		this.abstraction = s ;
-		content = new MainPanel(abstraction);
-		menuPan = new MenuPanel(abstraction);
+		PathFinder pf = new PathFinder(new KeyPointUser(0, 0, 0), false);
+		content = new MainPanel(abstraction, pf);
+		menuPan = new MenuPanel(abstraction, pf);
 		this.setTitle("HandinCapFi Application");
 		this.setSize(1600, 850);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,23 +64,8 @@ public class MainFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					FileOutputStream fos = new FileOutputStream("save.ser");
-
-					ObjectOutputStream oos = new ObjectOutputStream(fos); 
-					oos.writeObject(abstraction);
-
-
-					oos.close();
-
-
-				} catch (FileNotFoundException e) {
-
-					e.printStackTrace();
-				} catch (IOException e) {
-
-					e.printStackTrace();
-				} 
+				SaveProjectDialog d = new SaveProjectDialog(abstraction);
+				d.setVisible(true);
 
 			}
 

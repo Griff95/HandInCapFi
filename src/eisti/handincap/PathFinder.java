@@ -10,7 +10,10 @@ public class PathFinder implements Serializable {
 	//private ArrayList<KeyPoint> noeuds;
 	//private ArrayList<Link> liaisons;
 	private KeyPointUser userPos;
+	private KeyPointDestination destination;
 	private ArrayList<Link> chemin;
+	private boolean ascenseur;
+	private int cheminIndexCourrant;
 
 
 	/*
@@ -30,9 +33,12 @@ public class PathFinder implements Serializable {
 	}
 	*/
 	
-	public PathFinder(KeyPointUser userPosition) {
+	public PathFinder(KeyPointUser userPosition, boolean a) {
 		this.userPos = userPosition;
+		this.setDestination(null);
 		this.chemin = new ArrayList<Link>();
+		this.ascenseur = a;
+		this.setCheminIndexCourrant(0);
 
 		
 		
@@ -256,5 +262,35 @@ public class PathFinder implements Serializable {
 		this.userPos.setX(x);
 		this.userPos.setY(y);
 		this.userPos.setZ(z);
+	}
+
+
+	public boolean isAscenseur() {
+		return ascenseur;
+	}
+
+
+	public void setAscenseur(boolean ascenseur) {
+		this.ascenseur = ascenseur;
+	}
+
+
+	public KeyPointDestination getDestination() {
+		return destination;
+	}
+
+
+	public void setDestination(KeyPointDestination destination) {
+		this.destination = destination;
+	}
+
+
+	public int getCheminIndexCourrant() {
+		return cheminIndexCourrant;
+	}
+
+
+	public void setCheminIndexCourrant(int cheminIndexCourrant) {
+		this.cheminIndexCourrant = cheminIndexCourrant;
 	}
 }

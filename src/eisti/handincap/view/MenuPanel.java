@@ -9,16 +9,19 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import eisti.handincap.Building;
+import eisti.handincap.PathFinder;
 import eisti.handincap.Site;
+import eisti.handincap.control.SpeakUpAction;
+import eisti.handincap.utils.HandincapStaticMethods;
+import t2s.son.LecteurTexte;
 
 public class MenuPanel extends JPanel {
-	Site abstraction;
 	JLabel handincapLabel = new JLabel("Hand'in CapFi");
 	JLabel logoLabel;
-	
+
 	//JLabel paramLabel;
 	//JLabel parametreLabel = new JLabel("Parametres"); //petit texte parametres
-	
+
 	//declaration et imports des images
 	ImageIcon son = new ImageIcon("images/son.png");
 	ImageIcon passon = new ImageIcon("images/passon.png");
@@ -29,12 +32,11 @@ public class MenuPanel extends JPanel {
 	ImageIcon escalier = new ImageIcon("images/escaliers.png");
 	ImageIcon ascenseur = new ImageIcon("images/ascenseur.png");
 
-	public MenuPanel(Site abstraction) {
-		this.abstraction = abstraction;
+	public MenuPanel(Site abstraction, PathFinder pf) {
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		Border bord = BorderFactory.createEmptyBorder(5, 5, 5, 5);
 		this.setBorder(bord);
-		
+
 		ImageIcon logo = new ImageIcon("logo.jpg");
 		int imgH = logo.getIconHeight()/8;
 		int imgW = logo.getIconWidth()/8;
@@ -43,7 +45,7 @@ public class MenuPanel extends JPanel {
 		logo = new ImageIcon(scaledImg);
 		logoLabel = new JLabel(logo);
 		logoLabel.setPreferredSize(new Dimension(imgW, imgH));
-		
+
 		//image des parametres
 		/*ImageIcon param = new ImageIcon("images/parametres.png");
 		int imgParamH = param.getIconHeight();
@@ -61,50 +63,42 @@ public class MenuPanel extends JPanel {
 		Image scaledSonImg = son.getImage()
 				.getScaledInstance(imgSonW, imgSonH,  java.awt.Image.SCALE_SMOOTH);
 		son = new ImageIcon(scaledSonImg);
-	
+
 		//le boutton son
 		JButton a = new JButton (son);
-		a.setPressedIcon(passon);
+		a.setPressedIcon(son);
 		a.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (a.getIcon() == son) {
-					a.setIcon(passon);
+				String vocal;
+				if (abstraction.getBuildingIndexed(0).getPoints().isEmpty()) {
+					System.out.println("ici1");
+					vocal = "veuillez définir des points";
+				}
+				else if (abstraction.getBuildingIndexed(0).getLiaisons().isEmpty()) {
+					System.out.println("ici2");
+					vocal = "veuillez définir des liaisons";
+				}
+				else if (pf.getDestination() == null) {
+					System.out.println("ici3");
+					vocal = "veuillez définir une destination";
+				}
+				else if (pf.getChemin().size()-1 > pf.getCheminIndexCourrant()) {
+					System.out.println("ici4");
+					vocal = "veuillez avancer au point suivant";
 				}
 				else {
-					a.setIcon(son);
+					System.out.println("ici5");
+					vocal = "vous etes arriver à destination";
 				}
+				SpeakUpAction speak = new SpeakUpAction(vocal);
+				speak.run();
+
 			}
 		});
-				
-		//redimenssion micro
-		int imgMicroH = micro.getIconHeight()/2;
-		int imgMicroW = micro.getIconWidth()/2;
-		Image scaledMicroImg = micro.getImage()
-				.getScaledInstance(imgMicroW, imgMicroH,  java.awt.Image.SCALE_SMOOTH);
-		micro = new ImageIcon(scaledMicroImg);
-		//redimension pas micro
-		int imgPasMicroH = pasmicro.getIconHeight()/2;
-		int imgPasMicroW = pasmicro.getIconWidth()/2;
-		Image scaledPasMicroImg = pasmicro.getImage()
-				.getScaledInstance(imgPasMicroW, imgPasMicroH,  java.awt.Image.SCALE_SMOOTH);
-		pasmicro = new ImageIcon(scaledPasMicroImg);
-		
-		//le bouton micro
-		JButton b = new JButton (micro);
-		b.setPressedIcon(pasmicro);
-		b.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (b.getIcon() == micro) {
-					b.setIcon(pasmicro);
-				}
-				else {
-					b.setIcon(micro);
-				}
-			}
-		});
-		
+
+
+
 		//redimenssion carte
 		int imgCarteH = (int) (carte.getIconHeight()/1.28);
 		int imgCarteW = (int) (carte.getIconWidth()/1.28);
@@ -117,58 +111,63 @@ public class MenuPanel extends JPanel {
 		Image scaledFlecheImg = fleche.getImage()
 				.getScaledInstance(imgFlecheW, imgFlecheH,  java.awt.Image.SCALE_SMOOTH);
 		fleche = new ImageIcon(scaledFlecheImg);
-		
+
 		//le bouton plan
-		JButton c = new JButton (carte);
-		c.setPressedIcon(fleche);
+		JButton c = new JButton (fleche);
 		c.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (c.getIcon() == carte) {
-					c.setIcon(fleche);
-				}
-				else {
-					c.setIcon(carte);
-				}
+				BoussoleDialog d = new BoussoleDialog(pf.getUserPos(), pf.getDestination());
+				d.setVisible(true);
 			}
 		});
-		
-		
+
+
 		//redimenssion ascenseur
 		int imgAscenseurH = ascenseur.getIconHeight()/2;
 		int imgAscenseurW = ascenseur.getIconWidth()/2;
 		Image scaledAscenseurImg = ascenseur.getImage()
 				.getScaledInstance(imgAscenseurW, imgAscenseurH,  java.awt.Image.SCALE_SMOOTH);
 		ascenseur = new ImageIcon(scaledAscenseurImg);
-		
+
+		JButton d;
 		//le bouton escaliers
-		JButton d = new JButton (escalier);
-		d.setPressedIcon(ascenseur);
+		if (pf.isAscenseur()) {
+			d = new JButton (ascenseur);
+			d.setPressedIcon(escalier);	
+		} else {
+			d = new JButton (escalier);
+			d.setPressedIcon(ascenseur);
+		}
 		d.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (d.getIcon() == escalier) {
 					d.setIcon(ascenseur);
+					pf.setAscenseur(true);
 				}
 				else {
 					d.setIcon(escalier);
+					pf.setAscenseur(false);
 				}
 			}
 		});
-		
+
 		handincapLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		handincapLabel.setFont(new Font("Serif", Font.PLAIN, 20));
 		logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		//paramLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		//paramLabel.setToolTipText("Paramètres");
 		//parametreLabel.setAlignmentX(Component.BOTTOM_ALIGNMENT);
-		
+
 		a.setAlignmentX(Component.CENTER_ALIGNMENT);
 		a.setContentAreaFilled(false);
 		a.setBorderPainted(false);
+		/*
 		b.setAlignmentX(Component.CENTER_ALIGNMENT);
 		b.setContentAreaFilled(false);
 		b.setBorderPainted(false);
+		 */
 		c.setAlignmentX(Component.CENTER_ALIGNMENT);
 		c.setContentAreaFilled(false);
 		c.setBorderPainted(false);
@@ -177,14 +176,14 @@ public class MenuPanel extends JPanel {
 		d.setBorderPainted(false);
 
 
-		
+
 		this.add(logoLabel);
 		this.add(handincapLabel);
 		//this.add(paramLabel);
 		//this.add(parametreLabel);
 		this.setBackground(Color.pink);
 		this.add(a);
-		this.add(b);
+		//this.add(b);
 		this.add(c);
 		this.add(d);
 	}
@@ -193,6 +192,6 @@ public class MenuPanel extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 	}
-	
+
 
 }

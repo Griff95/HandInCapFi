@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -12,6 +13,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -25,6 +27,7 @@ import eisti.handincap.KeyPointUser;
 import eisti.handincap.PathFinder;
 import eisti.handincap.Site;
 import eisti.handincap.control.AddEtageAction;
+import eisti.handincap.utils.HandincapStaticMethods;
 
 public class MainPanel extends JPanel implements PropertyChangeListener {
 
@@ -40,9 +43,8 @@ public class MainPanel extends JPanel implements PropertyChangeListener {
 
 
 
-	public MainPanel(Site abstraction) {
+	public MainPanel(Site abstraction, PathFinder pf) {
 		this.abstraction = abstraction;
-		PathFinder pf = new PathFinder(new KeyPointUser(0, 0, 0));
 
 		Border b = BorderFactory.createEmptyBorder(5, 15, 5, 15);
 		this.setBorder(b);
@@ -95,7 +97,7 @@ public class MainPanel extends JPanel implements PropertyChangeListener {
 		controlMapPanel.add(etageDessous);
 		controlMapPanel.add(newEtageDessus);
 		controlMapPanel.add(newEtageDessous);
-		
+
 		comboDest = new JComboBox<KeyPointDestination>();
 		//comboDest.setPreferredSize(new Dimension(10,20));
 		//comboDest.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXX");
@@ -103,24 +105,44 @@ public class MainPanel extends JPanel implements PropertyChangeListener {
 		comboDest.setModel(new DefaultComboBoxModel(abstraction.getBuildingIndexed(mapLabel.getBatimentCourant()).getPointsDestination().toArray()));
 		abstraction.getBuildingIndexed(mapLabel.getBatimentCourant()).addPropertyChangeListener(this);
 
+		//redimenssion micro
+		ImageIcon micro = HandincapStaticMethods.getScaledImageIcon("images/microphone.png", 6);
+		//redimension pas micro
+		/*int imgPasMicroH = pasmicro.getIconHeight()/2;
+				int imgPasMicroW = pasmicro.getIconWidth()/2;
+				Image scaledPasMicroImg = pasmicro.getImage()
+						.getScaledInstance(imgPasMicroW, imgPasMicroH,  java.awt.Image.SCALE_SMOOTH);
+				pasmicro = new ImageIcon(scaledPasMicroImg);
+		 */
+		//le bouton micro
+		JButton button = new JButton (micro);
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// creer une dialog qui signifie l'écoute de la destination et bonne compréhension
+				System.out.println("On veut un des instructions vocales ici");
+			}
+		});
+
 		JButton goDest = new JButton("Go");
 		goDest.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				KeyPoint destination = (KeyPoint) comboDest.getSelectedItem();
-				//TODO pf.
+				pf.setDestination((KeyPointDestination) comboDest.getSelectedItem());
 			}
-			
+
 		});
+
 
 		// Définir la destination
 		JPanel destinationPanel = new JPanel();
 		destinationPanel.add(new JLabel("Définir destination (Batiment/Etage/Destination) : "));
 		destinationPanel.add(comboDest);
+		destinationPanel.add(button);
 		destinationPanel.add(goDest);
-		
-		
+
+
 		this.setAlignmentX(CENTER_ALIGNMENT);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		//this.setLayout(new BorderLayout());

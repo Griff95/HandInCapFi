@@ -1,14 +1,19 @@
 package eisti.handincap.view;
 
+import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.StreamCorruptedException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,9 +35,11 @@ public class LoadProjectFrame extends JFrame {
 		
 		JButton browse = new JButton("Parcourir..");
 		JLabel selectedFile = new JLabel("");
+		selectedFile.setAlignmentX(CENTER_ALIGNMENT);
 		JPanel browsePanel = new JPanel();
+		//browsePanel.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		browsePanel.add(browse);
-		browsePanel.add(selectedFile);
+		//browsePanel.add(selectedFile);
 		
 		JButton ok = new JButton("OK");
 		ok.setEnabled(false);
@@ -45,6 +52,7 @@ public class LoadProjectFrame extends JFrame {
 				if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 					savedFilePath = fc.getSelectedFile().getPath();
 					selectedFile.setText(savedFilePath);
+					LoadProjectFrame.this.pack();
 					ok.setEnabled(true);
 					
 					
@@ -61,36 +69,46 @@ public class LoadProjectFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				FileInputStream fis;
 				try {
+					File projectToLoad = new File(savedFilePath);
+					//System.out.println(projectToLoad.getClass());
+					//if (projectToLoad.)
+					//fis = new FileInputStream();
 					fis = new FileInputStream(savedFilePath);
 					ObjectInputStream ois = new ObjectInputStream(fis); 
 					Site project = (Site)ois.readObject();
 					LoadProjectFrame.this.dispose();
 					MainFrame main = new MainFrame(project);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//System.out.println("iciciicicic");
+					JDialog d = new JDialog(LoadProjectFrame.this, "Erreur - Chargement de fichier");
+					d.setLayout(new FlowLayout());
+					d.add(new JLabel("Vous devez sélectionner un fichier '.ser'"));
+					d.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					d.setLocationRelativeTo(null);
+					d.setVisible(true);
+					//e.printStackTrace();
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-				
+				}				
 			}
 			
 		});
 		JPanel okPanel = new JPanel();
 		okPanel.add(ok);
-		
+		JLabel lab = new JLabel("Sélectionner le fichier de sauvegarde : ");
+		lab.setAlignmentX(CENTER_ALIGNMENT);
 		
 		JPanel loadProjectPanel = new JPanel();
 		loadProjectPanel.setLayout(new BoxLayout(loadProjectPanel, BoxLayout.PAGE_AXIS));
-		loadProjectPanel.add(new JLabel("Sélectionner le fichier de sauvegarde : "));
+		loadProjectPanel.add(lab);
 		loadProjectPanel.add(browsePanel);
+		loadProjectPanel.add(selectedFile);
 		loadProjectPanel.add(okPanel);
 		
 		this.add(loadProjectPanel);
 		this.pack();
 	}
+
 }
