@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Building implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
 	private String nom;
 	private ArrayList<String> etages;
 	private ArrayList<KeyPoint> points;
@@ -102,6 +108,11 @@ public class Building implements Serializable{
 	public String toString() {
 		return getNom();
 		
+	}
+
+	public void removePoints(KeyPoint k) {
+		this.points.remove(k);
+		pcs.firePropertyChange("removePoint", null, null);		
 	}
 
 

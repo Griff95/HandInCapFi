@@ -5,12 +5,20 @@ import java.util.ArrayList;
 
 public class KeyPoint implements Serializable{
 	
-	public static int acc = 0;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+
+	public static final int DISTANCE_FUSION = 50;
+	
+	public static int acc = -1;
 	
 	public int num;// Définit l'id du noeud
 	private int x, y ,z; // Coordonnées du point
 	
-	
+	// PAS METTRE
 	private int distanceSource = Integer.MAX_VALUE; // Initialise la valeur de la distance entre le noeud et la source à l'infini
 	private boolean visite; // Indique si le noeud a été visité ou non
 	private ArrayList<Link> liaisons; // Liste des liaisons
@@ -18,6 +26,7 @@ public class KeyPoint implements Serializable{
 	
 	
 	public KeyPoint(int x, int y, int z) {
+		System.out.println("acc is " + acc);
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -88,8 +97,18 @@ public class KeyPoint implements Serializable{
 		this.z = z;
 	}
 	
-	public int getDistanceTo(KeyPoint k) {
-		return (int) Math.sqrt(Math.pow((this.getX()-k.getX()), 2)+Math.pow((this.getY()-k.getY()),2));
+	// Donne la distance entre deux noeuds
+	public int getDistanceTo(KeyPoint user) {
+		double distance = 0;
+		if (user.getZ() != this.getZ()) {
+			distance = Math.abs(user.getZ() - this.getZ())*DISTANCE_FUSION;
+		}
+		distance += Math.sqrt(Math.pow((user.getX()-this.getX()), 2)+Math.pow((user.getY()-this.getY()),2));
+		return (int) distance;
+	}
+	
+	public static void setAccumulateur(int i) {
+		acc = i;
 	}
 
 

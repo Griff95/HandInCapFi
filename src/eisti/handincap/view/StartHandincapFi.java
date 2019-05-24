@@ -61,8 +61,8 @@ public class StartHandincapFi extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				StartHandincapFi.this.dispose();
-				LoadProjectFrame loadFrame = new LoadProjectFrame();
+				//StartHandincapFi.this.dispose();
+				LoadProjectFrame loadFrame = new LoadProjectFrame(StartHandincapFi.this);
 				
 			}
 			
@@ -72,8 +72,8 @@ public class StartHandincapFi extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				StartHandincapFi.this.dispose();
-				NewProjectFrame newProjectFrame = new NewProjectFrame();
+				//StartHandincapFi.this.dispose();
+				NewProjectFrame newProjectFrame = new NewProjectFrame(StartHandincapFi.this);
 				
 			}
 			

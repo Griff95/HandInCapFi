@@ -1,6 +1,10 @@
 package eisti.handincap;
 
 public class KeyPointDestination extends KeyPoint {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String name;
 	
 	public KeyPointDestination(int x, int y, int z, String nomDeSalle) {

@@ -58,10 +58,10 @@ public class AddLinkAction implements MouseListener {
 				}
 			}
 		}
-		if (released != null && pressed != null) {
+		if (released != null && pressed != null && !released.equals(pressed)) {
 			// System.out.println("posé dans l'canapé !");
 			// Ajout de liaison
-			Link l = new Link(pressed, released, 5);
+			Link l = new Link(pressed, released);
 			abstraction.getBuildingIndexed(view.getBatimentCourant()).getLiaisons().add(l);
 		}
 

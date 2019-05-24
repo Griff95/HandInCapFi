@@ -21,10 +21,10 @@ public class NewProjectFrame extends JFrame {
 	private JPanel newProjectPanel;
 	private String firstMapPath = "";
 	
-	public NewProjectFrame() {
+	public NewProjectFrame(JFrame frame) {
 		this.setTitle("HandincapFi - Nouveau Projet");
 		this.setSize(500,400);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		
@@ -72,6 +72,7 @@ public class NewProjectFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				Site abstraction = new Site(nomProjetField.getText());
 				abstraction.addBuilding(new Building(nomBatimentField.getText(), firstMapPath));
+				frame.dispose();
 				NewProjectFrame.this.dispose();
 				MainFrame main = new MainFrame(abstraction);
 			}

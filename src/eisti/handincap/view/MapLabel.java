@@ -106,7 +106,7 @@ public class MapLabel extends JLabel {
 					});
 					popup.add(addLiaison);
 					popup.add(item = new JMenuItem("Supprimer ce point repère"));
-					item.addActionListener(new RemoveKeyPointAction(this, abstraction, k, batimentCourant));
+					item.addActionListener(new RemoveKeyPointAction(this, abstraction, k, batimentCourant, pf));
 					popup.addSeparator();
 					break;				
 				}
@@ -164,6 +164,7 @@ public class MapLabel extends JLabel {
 	}
 
 	public int getEtageCourant() {
+		//System.out.println("etageCourant = " + etageCourant);
 		return etageCourant;
 	}
 
@@ -183,13 +184,18 @@ public class MapLabel extends JLabel {
 				Graphics2D g2d = (Graphics2D) g;
 
 				//print links
-				g2d.setColor(Color.ORANGE);
+				g2d.setColor(Color.GREEN);
 				g2d.setStroke(new BasicStroke(5));
 				for (Link l : abstraction.getBuildingIndexed(batimentCourant).getLiaisons()) {
 					KeyPoint k1 = l.getK1();
 					KeyPoint k2 = l.getK2();
 					if (k1.getZ() == etageCourant && k2.getZ() == etageCourant) {
-						g2d.drawLine(k1.getX(), k1.getY(), k2.getX(), k2.getY());						
+						g2d.setColor(Color.GREEN);
+						g2d.drawLine(k1.getX(), k1.getY(), k2.getX(), k2.getY());
+						
+						g2d.setColor(Color.black);
+						g2d.drawString(String.valueOf(l.getTaille()), (k1.getX() + k2.getX())/2, (k1.getY() + k2.getY())/2);
+						g2d.setColor(Color.GREEN);
 					} else {
 						if (k1.getZ() == etageCourant) {
 							if (k2.getZ()+1 == etageCourant)
@@ -206,7 +212,7 @@ public class MapLabel extends JLabel {
 				}
 				
 				//print le plus court chemin
-				g2d.setColor(Color.YELLOW);
+				g2d.setColor(Color.ORANGE);
 				g2d.setStroke(new BasicStroke(7));
 				for (Link l : pf.getChemin()) {
 					KeyPoint k1 = l.getK1();
@@ -225,6 +231,7 @@ public class MapLabel extends JLabel {
 							g2d.drawString(((KeyPointDestination) p).getName(), p.getX(), p.getY()-15);
 							g.setColor(Color.BLUE);
 						}
+						g2d.drawString(Integer.toString(p.num), p.getX()-DIAMETRE_KEYPOINT/2+30, p.getY()-DIAMETRE_KEYPOINT/2);
 						g.fillOval((int) p.getX()-DIAMETRE_KEYPOINT/2, (int) p.getY()-DIAMETRE_KEYPOINT/2, DIAMETRE_KEYPOINT, DIAMETRE_KEYPOINT);		
 					}
 
@@ -238,7 +245,7 @@ public class MapLabel extends JLabel {
 					//System.out.println(orientation);
 					int x = p.getX();
 					int y = p.getY();
-					//TODO C'est PAS BON !!!
+					// On cherche les points du triangle pour l'orientation et le point donnée
 					int[] xs = {  (int) (x-Math.cos(orientation)*DIAMETRE_KEYPOINT/2), (int) (x+Math.cos(orientation)*DIAMETRE_KEYPOINT/2), (int) (x+Math.cos(orientation2)*DIAMETRE_KEYPOINT*2) };
 					int[] ys = { (int) (y+Math.sin(orientation)*DIAMETRE_KEYPOINT/2), (int) (y-Math.sin(orientation)*DIAMETRE_KEYPOINT/2), (int) (y+Math.sin(orientation2)*DIAMETRE_KEYPOINT*2) };
 					g.fillPolygon(xs, ys, 3);

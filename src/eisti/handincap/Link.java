@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class Link implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// Le noeud dont la liaison provient et où elle mène avec les coordonnées associées
 	private int deNemeNoeud;
 	private int versNemeNoeud;
@@ -15,12 +19,13 @@ public class Link implements Serializable{
 
 
 	// Initialisation des valeurs à l'appel de fonction
-	public Link(KeyPoint deNemeNoeud, KeyPoint versNemeNoeud, int taille) {
+	public Link(KeyPoint deNemeNoeud, KeyPoint versNemeNoeud) {
 		this.k1 = deNemeNoeud;
 		this.k2 = versNemeNoeud;
 		this.deNemeNoeud = deNemeNoeud.num;
 		this.versNemeNoeud = versNemeNoeud.num;
-		this.taille = taille;
+		this.taille = k1.getDistanceTo(k2);
+		System.out.println("taille = " + taille);
 	}
 
 	public KeyPoint getK1() {
@@ -51,5 +56,13 @@ public class Link implements Serializable{
 		} else {
 			return this.deNemeNoeud;
 		}
+	}
+
+	public KeyPoint getDeNemeNoeudK() {
+		return k1;
+	}
+
+	public KeyPoint getVersNemeNoeudK() {
+		return k2;
 	}
 }

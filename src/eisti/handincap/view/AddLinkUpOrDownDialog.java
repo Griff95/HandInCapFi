@@ -26,7 +26,7 @@ public class AddLinkUpOrDownDialog extends JDialog {
 		DOWN
 	}
 	
-	public final static int DISTANCE_FUSION = 50;
+
 
 	private JLabel mapUpOrDown;
 	private JComboBox<LinkUpOrDown.Type> typeCombo;
@@ -91,7 +91,7 @@ public class AddLinkUpOrDownDialog extends JDialog {
 									x > xk - MapLabel.DIAMETRE_KEYPOINT/2 &&
 									y < yk + MapLabel.DIAMETRE_KEYPOINT/2 &&
 									y > yk - MapLabel.DIAMETRE_KEYPOINT/2) {
-								abstraction.getBuildingIndexed(batC).getLiaisons().add(new LinkUpOrDown(k1, k, DISTANCE_FUSION, (LinkUpOrDown.Type) typeCombo.getSelectedItem()));
+								abstraction.getBuildingIndexed(batC).getLiaisons().add(new LinkUpOrDown(k1, k, (LinkUpOrDown.Type) typeCombo.getSelectedItem()));
 								AddLinkUpOrDownDialog.this.dispose();
 								break;
 							}

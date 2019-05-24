@@ -26,10 +26,10 @@ public class LoadProjectFrame extends JFrame {
 	
 	private String savedFilePath;
 	
-	public LoadProjectFrame() {
+	public LoadProjectFrame(JFrame frame) {
 		super();
 		this.setTitle("HandincapFi - Charger un Projet");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		
@@ -85,10 +85,11 @@ public class LoadProjectFrame extends JFrame {
 					JDialog d = new JDialog(LoadProjectFrame.this, "Erreur - Chargement de fichier");
 					d.setLayout(new FlowLayout());
 					d.add(new JLabel("Vous devez sélectionner un fichier '.ser'"));
-					d.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					d.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					d.setLocationRelativeTo(null);
 					d.setVisible(true);
-					//e.printStackTrace();
+					d.pack();
+					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}				

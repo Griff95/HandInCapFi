@@ -79,11 +79,11 @@ public class MenuPanel extends JPanel {
 					System.out.println("ici2");
 					vocal = "veuillez définir des liaisons";
 				}
-				else if (pf.getDestination() == null) {
+				else if (pf.getDest() == null) {
 					System.out.println("ici3");
 					vocal = "veuillez définir une destination";
 				}
-				else if (pf.getChemin().size()-1 > pf.getCheminIndexCourrant()) {
+				else if (pf.getChemin().size() > 1) {
 					System.out.println("ici4");
 					vocal = "veuillez avancer au point suivant";
 				}
@@ -117,7 +117,7 @@ public class MenuPanel extends JPanel {
 		c.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				BoussoleDialog d = new BoussoleDialog(pf.getUserPos(), pf.getDestination());
+				BoussoleFrame d = new BoussoleFrame(pf.getUserPos(), pf.getNextKeyPointFromChemin());
 				d.setVisible(true);
 			}
 		});
@@ -168,6 +168,7 @@ public class MenuPanel extends JPanel {
 		b.setContentAreaFilled(false);
 		b.setBorderPainted(false);
 		 */
+		
 		c.setAlignmentX(Component.CENTER_ALIGNMENT);
 		c.setContentAreaFilled(false);
 		c.setBorderPainted(false);
@@ -178,14 +179,20 @@ public class MenuPanel extends JPanel {
 
 
 		this.add(logoLabel);
+		this.add(Box.createVerticalStrut(10));
 		this.add(handincapLabel);
 		//this.add(paramLabel);
 		//this.add(parametreLabel);
-		this.setBackground(Color.pink);
+		//this.setBackground(Color.pink);
+		this.add(Box.createVerticalStrut(50));
 		this.add(a);
+		this.add(Box.createVerticalStrut(10));
 		//this.add(b);
+		//this.add(Box.createVerticalStrut(10));
 		this.add(c);
+		this.add(Box.createVerticalStrut(10));
 		this.add(d);
+		this.add(Box.createVerticalStrut(10));
 	}
 
 

@@ -120,7 +120,7 @@ public class MainPanel extends JPanel implements PropertyChangeListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// creer une dialog qui signifie l'écoute de la destination et bonne compréhension
-				System.out.println("On veut un des instructions vocales ici");
+				System.out.println("On veut des instructions vocales ici");
 			}
 		});
 
@@ -129,7 +129,10 @@ public class MainPanel extends JPanel implements PropertyChangeListener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				pf.setDestination((KeyPointDestination) comboDest.getSelectedItem());
+				
+				pf.calculChemin(abstraction.getBuildingIndexed(mapLabel.getBatimentCourant()).getPoints(),
+								abstraction.getBuildingIndexed(mapLabel.getBatimentCourant()).getLiaisons(),
+								(KeyPointDestination) comboDest.getSelectedItem());
 			}
 
 		});

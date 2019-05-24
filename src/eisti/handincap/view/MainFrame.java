@@ -14,6 +14,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import eisti.handincap.Building;
+import eisti.handincap.KeyPoint;
 import eisti.handincap.KeyPointUser;
 import eisti.handincap.PathFinder;
 import eisti.handincap.Site;
@@ -28,6 +29,7 @@ public class MainFrame extends JFrame {
 
 	public MainFrame(Site s){
 		this.abstraction = s ;
+		KeyPoint.setAccumulateur(s.getBuildingIndexed(0).getPoints().size()-1);
 		PathFinder pf = new PathFinder(new KeyPointUser(0, 0, 0), false);
 		content = new MainPanel(abstraction, pf);
 		menuPan = new MenuPanel(abstraction, pf);
@@ -45,7 +47,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				MainFrame.this.dispose();
-				NewProjectFrame newProjectFrame = new NewProjectFrame();
+				NewProjectFrame newProjectFrame = new NewProjectFrame(MainFrame.this);
 			}
 
 		});
@@ -55,7 +57,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				MainFrame.this.dispose();
-				LoadProjectFrame loadFrame = new LoadProjectFrame();
+				LoadProjectFrame loadFrame = new LoadProjectFrame(MainFrame.this);
 			}
 
 		});
